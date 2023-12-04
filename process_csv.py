@@ -1,29 +1,54 @@
 import pandas as pd
-import pickle
-import os
-# Read the CSV file
-data = pd.read_csv('/Users/davideventre/Desktop/telegram_daten/data_prep/tp4p1_metadata.csv', sep='\t', low_memory=False, nrows= 100000)
-tp = 'tp4'
-# Adapt dates to a homogeneous format
-data['text_date'] = data['text_date'].str.replace(r'^(\d{2})(\d{4})$', r'\2-\1-01', regex=True)
-data['text_date'] = data['text_date'].str.replace(r'^(\d{4})(\d{2})(\d{2})$', r'\1-\2-\3', regex=True)
-data['text_date'] = data['text_date'].str.replace('_', '-')
+import re
 
-# Extract metadata columns
-metadata = data[['text_id', 'text_date', 'text_page_title', 'text_section', 
-                 'text_source', 'text_text_type', 'text_title', 'text_year']]
+# Step 2: Read the existing .csv file and create a new DataFrame for the combined data
+csv_file_path = ''# output path to csv
+metadata_df = pd.read_csv(csv_file_path, sep='\t', low_memory=False, usecols=['text_id', 'text_date', 'text_section', 'text_source', 'text_text_type', 'text_title'])
 
-# Create output directories if they don't exist
-txt_output_dir = f'{tp}_txt'
-pkl_output_dir = f'{tp}_pkl'
-os.makedirs(txt_output_dir, exist_ok=True)
-os.makedirs(pkl_output_dir, exist_ok=True)
+# Create a new DataFrame to hold the combined data
+combined_data = []
+txt_file_path = ''#insert path to txt
+with open(txt_file_path, 'r', encoding='utf-8') as txt_file:
+    text = txt_file.read()
 
-# Save each column as a separate file
-for column in metadata.columns:
-    column_data = metadata[column]
-    txt_file_path = os.path.join(txt_output_dir, f'{column}_{tp}.txt')
-    pkl_file_path = os.path.join(pkl_output_dir, f'{column}_{tp}.pkl')
-    column_data.to_csv(txt_file_path, index=False, header=False)
-    with open(pkl_file_path, 'wb') as file:
-        pickle.dump(column_data, file)
+# Muster zum Extrahieren des Textinhalts zwischen den <text>-Tags
+muster = r'<text id="([^"]+)">([^<]+)</text>'
+# Alle Textabschnitte extrahieren
+ergebnisse = re.findall(muster, text)
+result_dict = dict(ergebnisse)
+
+# Loop through each row in the CSV and extract the corresponding text from the .txt file
+for index, row in metadata_df.iterrows():
+    text_id = row['text_id']
+
+    # Check if the text_id exists as a key in result_dict
+    if text_id in result_dict:
+        text = result_dict[text_id].strip()
+        
+        # Create a dictionary with the required values
+        combined_row = {
+            'text_id': text_id,
+            'text_date': row['text_date'],
+            'text_section': row['text_section'],
+            'text_source': row['text_source'],
+            'text_text_type': row['text_text_type'],
+            'text_title': row['text_title'],
+            'text_content': text
+        }
+        # Append the dictionary to the combined_data list
+        combined_data.append(combined_row)
+    else:
+        pass
+
+# Create a new DataFrame with the combined data
+combined_df = pd.DataFrame(combined_data)
+print(len(combined_data))
+# Step 3: Adapt dates to a homogeneous format
+combined_df['text_date'] = combined_df['text_date'].str.replace(r'^(\d{2})(\d{4})$', r'\2-\1', regex=True)
+combined_df['text_date'] = combined_df['text_date'].str.replace(r'^(\d{4})(\d{2})(\d{2})$', r'\1-\2-\3', regex=True)
+combined_df['text_date'] = combined_df['text_date'].str.replace('_', '-')
+combined_df['text_date'] = combined_df['text_date'].str.replace('no-entry', '1989-01-01')
+
+# Step 4: Save the new DataFrame to a new .csv file
+new_csv_file_path = 'subcorpus_tp1.csv'
+combined_df.to_csv(new_csv_file_path, sep='\t', index=False)
