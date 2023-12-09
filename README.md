@@ -26,7 +26,7 @@ In diesem Ordner finden Sie Skripte und Modelle für das Topic Modeling. Topic M
 Der `twec`-Ordner befasst sich mit der Anwendung von Temporal Word Embeddings with a Compass (TWEC), einer Methode zur Analyse von Wortbedeutungen über die Zeit. [TWEC-Paper](https://arxiv.org/pdf/2308.02142.pdf)
 
 #### Inhalt:
-- **TWEC-Skripte:** Skripte zum Trainieren von TWEC-Modellen.
+- **TWEC-Skripte:** Skripte zum Trainieren von TWEC-Modellen. Das Skript basiert in grossen Teilen auf folgendes Skript: [TWEC](https://gitlab.uzh.ch/zukoko/sommerschule-2023/-/tree/master/C5-Distributionelle-Semantik/TWEC_Clustering?ref_type=heads)
 - **Datenhandling:** Werkzeuge zum Importieren und Vorbereiten von Datensätzen für TWEC.
 - **Modell-Analyse:** Skripte zur Untersuchung und Interpretation der generierten Word Embeddings.
 - **Visualisierung:** Tools zur graphischen Darstellung der Ergebnisse, z.B. durch Vektorraum-Diagramme.
