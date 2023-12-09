@@ -3,6 +3,10 @@
 ## Überblick
 Dieses Jupyter-Notebook dient zur Analyse und Visualisierung von Textdaten mithilfe fortschrittlicher NLP-Techniken, einschließlich BERTopic. Das Notebook umfasst mehrere Schritte: Datenimport, Datenverarbeitung, Modellbildung mit BERTopic, und Visualisierung der Ergebnisse.
 
+Mit *compare* können zwei unterschiedliche Korpora miteinander verglichen werden. Mögliche Inputformate sind:
+- zwei verschiedene .csv Dateien
+- .csv Datei, die basierend auf Metadaten (Zeitraum oder Quelle) unterteilt werden
+
 ## Voraussetzungen
 - Installation von Python und Jupyter Notebook.
 - Notwendige Python-Bibliotheken: `plotly`, `matplotlib`, `pandas`, `numpy`, `sklearn`, `sentence_transformers`, `bertopic`, `hdbscan`, `umap-learn`.
