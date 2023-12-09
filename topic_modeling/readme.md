@@ -7,6 +7,8 @@ Mit *compare* können zwei unterschiedliche Korpora miteinander verglichen werde
 - zwei verschiedene .csv Dateien
 - .csv Datei, die basierend auf Metadaten (Zeitraum oder Quelle) unterteilt werden
 
+Mit *korpus* wird ein Topic Modeling für ein Korpus erstellt, das je nach Fragestellung in kleinere Textmengen (Zeitraum oder Quelle) unterteilt werden kann.
+
 ## Voraussetzungen
 - Installation von Python und Jupyter Notebook.
 - Notwendige Python-Bibliotheken: `plotly`, `matplotlib`, `pandas`, `numpy`, `sklearn`, `sentence_transformers`, `bertopic`, `hdbscan`, `umap-learn`.
