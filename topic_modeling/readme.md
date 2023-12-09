@@ -1,5 +1,5 @@
 # README für BERTopic
-
+weitere Infos zu BERTopic: https://maartengr.github.io/BERTopic/api/bertopic.html 
 ## Überblick
 Dieses Jupyter-Notebook dient zur Analyse und Visualisierung von Textdaten mithilfe fortschrittlicher NLP-Techniken, einschließlich BERTopic. Das Notebook umfasst mehrere Schritte: Datenimport, Datenverarbeitung, Modellbildung mit BERTopic, und Visualisierung der Ergebnisse.
 
