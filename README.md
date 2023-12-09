@@ -19,11 +19,11 @@ In diesem Ordner finden Sie Skripte und Modelle für das Topic Modeling. Topic M
 
 #### Inhalt:
 - BERTopic-Skript, das für diskurslinguistische Fragestellungen optimiert wurde.
-- Man kann alles auf Marten Grotendorst [GitHub-Seite](https://maartengr.github.io/BERTopic/api/bertopic.html) nachlesen
+- Man kann alles auf Marten Grotendorsts [GitHub-Seite](https://maartengr.github.io/BERTopic/api/bertopic.html) nachlesen
 
 
 ### 3. twec
-Der `twec`-Ordner befasst sich mit der Anwendung von Temporal Word Embeddings with a Compass (TWEC), einer Methode zur Analyse von Wortbedeutungen über die Zeit.
+Der `twec`-Ordner befasst sich mit der Anwendung von Temporal Word Embeddings with a Compass (TWEC), einer Methode zur Analyse von Wortbedeutungen über die Zeit. [TWEC-Paper](https://arxiv.org/pdf/2308.02142.pdf)
 
 #### Inhalt:
 - **TWEC-Skripte:** Skripte zum Trainieren von TWEC-Modellen.
