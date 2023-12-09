@@ -1,4 +1,4 @@
-# Readme für das Script zur Datenanalyse und -verarbeitung
+# Readme für TWEC
 
 ## Übersicht
 Dieses Script bietet eine umfassende Pipeline zur Verarbeitung und Analyse von Textdaten, insbesondere für den Vergleich von Textquellen und Zeiträumen. Es basiert auf der Anwendung von TWEC (Temporal Word Embeddings with a Compass) und anderen textverarbeitenden Methoden. Das Script ist modular aufgebaut, wobei jeder Abschnitt spezifische Aufgaben in der Datenverarbeitung übernimmt.
