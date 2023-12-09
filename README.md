@@ -1,8 +1,6 @@
 # koDi
 Quantitative Methoden für diskurslinguistische Perspektiven
 
-# Readme für die Ordnerstruktur: preprocessing, topic_modeling, twec
-
 ## Überblick
 Diese Dokumentation gibt einen Überblick über die drei Hauptordner `preprocessing`, `topic_modeling` und `twec`, die jeweils unterschiedliche Aspekte der Datenverarbeitung und -analyse abdecken. Jeder Ordner enthält spezifische Skripte und Ressourcen, die für die jeweiligen Prozesse erforderlich sind.
 
