@@ -1,4 +1,4 @@
-# digital_humanities_telegram
+# zusätzliche Skripte
 Skripte zum Erstellen eines Telegram-Korpus und zur Analyse der Daten mit WordEmbeddings und BERTopic
 
 Die Daten sind auf diesem Github nicht verfügbar, können aber angefordert werden.
