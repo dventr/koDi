@@ -1,32 +1,36 @@
-# README for TWEC
+# TWEC – Temporal Semantic Change
 
-## Overview
-This script provides a comprehensive pipeline for processing and analyzing text data, particularly for comparing text sources and time periods. It is based on the application of **TWEC** (Temporal Word Embeddings with a Compass) and other text processing methods. The script is modular, with each section responsible for specific tasks in the data processing workflow.
+Example of using [TWEC](https://github.com/loretoparisi/twec) to track **semantic change over time** with aligned word embeddings.
 
-## Dependencies
-- **Pandas**: For reading and processing CSV files.  
-- **NLTK** or **SpaCy**: For tokenizing the texts.  
-- **TWEC** and **Gensim**: For training and using word embeddings.  
-- **Multiprocessing**: To speed up computations via parallel processing.  
+## How it works
+1. Load a TSV corpus with `text_content` and `text_date`.
+2. Bucket texts by **year** or **custom date ranges**.
+3. Train a **compass** model on the whole corpus.
+4. Train **aligned slice models** per time bucket.
+5. Print nearest neighbors of a target word for each time slice.
 
-### Installation
-Before using the script, install the required libraries via `pip`:
+## Requirements
 ```bash
-pip install -r requirements.txt
+pip install pandas gensim twec
 ```
-## Script Components
-1. **Data Preparation**: Import your CSV files and initialize data structures.  
-2. **Source Comparison**: Load and categorize text data by source.  
-3. **Time Period Comparison**: Load and sort texts by date to enable cross-period comparisons.  
-4. **Tokenization**: Convert texts into tokens using either NLTK or SpaCy, depending on your preference.  
-5. **Frequency Dictionaries**: Create dictionaries mapping word frequencies in the texts.  
-6. **TWEC**: Initialize and train TWEC to create temporal word embeddings.  
-7. **Model Saving**: Save trained models for later use and analysis.  
 
-## Usage Notes
-- **Data Import**: Adjust the paths to your CSV files as needed.  
-- **Tokenization**: Ensure the correct language setting when tokenizing.  
-- **TWEC Training**: Be aware that TWEC training can be computationally intensive. Make sure your hardware meets the requirements.  
+## Run 
+```bash
+python twec_temporal.py
+```
 
-## Additional Information
-This script is based on Tim Feldmüller’s implementation of TWEC, which is available at the following [GitLab link](https://gitlab.uzh.ch/zukoko/sommerschule-2023/-/tree/master/C5-Distributionelle-Semantik/TWEC_Clustering/scripts?ref_type=heads). For more detailed explanations and examples, visit the linked page.
+## Configure in the script:
+- TSV_PATH – path to your TSV file
+- BUCKET_MODE – "year" or "custom"
+- TARGET_WORD – word to track
+
+Example output
+```bash
+=== Nearest neighbors for 'Organspende' across time ===
+y1992: Transplantation (0.46), Spender (0.42)
+y2010: Organspender (0.48), Transplantationsgesetz (0.44)
+y2020: Gewebespende (0.47), Zustimmungslösung (0.41)
+```
+Outputs:
+	•	data/ – sentence files per time bucket
+	•	model/ – trained compass + slice models
