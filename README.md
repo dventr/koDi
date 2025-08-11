@@ -1,38 +1,31 @@
-# koDi
-Quantitative Methoden für diskurslinguistische Perspektiven
+# koDi  
+Quantitative Methods for Discourse Linguistic Perspectives  
 
-## Überblick
-Diese Dokumentation gibt einen Überblick über die drei Hauptordner `preprocessing`, `topic_modeling` und `twec`, die jeweils unterschiedliche Aspekte der Datenverarbeitung und -analyse abdecken. Jeder Ordner enthält spezifische Skripte und Ressourcen, die für die jeweiligen Prozesse erforderlich sind.
+## Overview  
+This documentation provides an overview of the two main folders `topic_modeling` and `twec`, each covering different aspects of data analysis. Each folder contains specific scripts and resources required for the respective processes.  
 
-## Ordnerstruktur
+## Folder Structure  
 
-### 1. preprocessing
-Dieser Ordner enthält Skripte und Ressourcen, die für die Vorverarbeitung von Textdaten verwendet werden. Die Vorverarbeitung ist ein kritischer Schritt, um Daten für die weitere Analyse vorzubereiten.
+### 1. `topic_modeling`  
+This folder contains scripts and models for topic modeling, a method for identifying topics in large text collections.  
 
-#### Inhalt:
-- Kombiniert die .csv-Datei auf NextCloud mit einer .txt-Datei von CQP-Web
+**Contents:**  
+- A BERTopic script optimized for discourse linguistic research questions.  
+- Further information can be found on Maarten Grootendorst’s [GitHub page](https://maartengr.github.io/BERTopic/api/bertopic.html).  
 
-### 2. topic_modeling
-In diesem Ordner finden Sie Skripte und Modelle für das Topic Modeling. Topic Modeling ist eine Methode zur Identifizierung von Themen in großen Textmengen.
+### 2. `twec`  
+The `twec` folder focuses on the application of Temporal Word Embeddings with a Compass (TWEC), a method for analyzing word meanings over time. [TWEC Paper](https://arxiv.org/pdf/2308.02142.pdf)  
 
-#### Inhalt:
-- BERTopic-Skript, das für diskurslinguistische Fragestellungen optimiert wurde.
-- Man kann alles auf Marten Grotendorsts [GitHub-Seite](https://maartengr.github.io/BERTopic/api/bertopic.html) nachlesen
+**Contents:**  
+- **TWEC Scripts:** Scripts for training TWEC models, largely based on the following script: [TWEC](https://gitlab.uzh.ch/zukoko/sommerschule-2023/-/tree/master/C5-Distributionelle-Semantik/TWEC_Clustering?ref_type=heads).  
+- **Data Handling:** Tools for importing and preparing datasets for TWEC.  
+- **Model Analysis:** Scripts for examining and interpreting the generated word embeddings.  
+- **Visualization:** Tools for graphically representing the results, e.g., through vector space diagrams.  
 
+## Usage Notes  
+- **Dependency Installation:** Ensure all required libraries are installed. The necessary libraries are listed in the respective subfolders.  
+- **Script Adaptation:** Adjust the scripts to your specific data and requirements.  
+- **Documentation:** Each folder contains a dedicated README file with more detailed instructions and information.  
 
-### 3. twec
-Der `twec`-Ordner befasst sich mit der Anwendung von Temporal Word Embeddings with a Compass (TWEC), einer Methode zur Analyse von Wortbedeutungen über die Zeit. [TWEC-Paper](https://arxiv.org/pdf/2308.02142.pdf)
-
-#### Inhalt:
-- **TWEC-Skripte:** Skripte zum Trainieren von TWEC-Modellen. Das Skript basiert in grossen Teilen auf folgendes Skript: [TWEC](https://gitlab.uzh.ch/zukoko/sommerschule-2023/-/tree/master/C5-Distributionelle-Semantik/TWEC_Clustering?ref_type=heads)
-- **Datenhandling:** Werkzeuge zum Importieren und Vorbereiten von Datensätzen für TWEC.
-- **Modell-Analyse:** Skripte zur Untersuchung und Interpretation der generierten Word Embeddings.
-- **Visualisierung:** Tools zur graphischen Darstellung der Ergebnisse, z.B. durch Vektorraum-Diagramme.
-
-## Nutzungshinweise
-- **Installation der Abhängigkeiten:** Stellen Sie sicher, dass alle benötigten Bibliotheken installiert sind. Die erforderlichen Bibliotheken finden Sie in den jeweiligen Unterordnern.
-- **Anpassung der Skripte:** Passen Sie die Skripte an Ihre spezifischen Daten und Anforderungen an.
-- **Dokumentation:** Jeder Ordner enthält eine spezifische README-Datei mit detaillierteren Anweisungen und Informationen.
-
-## Zusätzliche Ressourcen
-Zusätzliche Ressourcen und Beispiele finden Sie in den jeweiligen Unterordnern. Für eine umfassendere Anleitung und Best Practices verweisen wir auf die beigefügten Dokumentationen und externe Quellen. 
+## Additional Resources  
+Additional resources and examples can be found in the respective subfolders. For a more comprehensive guide and best practices, refer to the included documentation and external sources.  
