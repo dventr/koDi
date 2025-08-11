@@ -6,10 +6,6 @@ Overview
 
 This Jupyter Notebook is used for the analysis and visualization of text data using advanced NLP techniques, including BERTopic. The notebook covers several steps: data import, data processing, model building with BERTopic, and visualization of the results.
 
-With compare, two different corpora can be compared. Possible input formats are:
-	•	two different .csv files
-	•	a .csv file split based on metadata (time period or source)
-
 With korpus, topic modeling is performed for a corpus that can, depending on the research question, be divided into smaller text sets (time period or source).
 
 Requirements
