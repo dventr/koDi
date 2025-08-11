@@ -1,0 +1,159 @@
+# ============
+# Minimal TWEC: Temporal Change Only
+# ============
+# Requirements (example):
+# pip install pandas gensim twec
+
+import os
+import multiprocessing
+import pandas as pd
+from twec.twec import TWEC
+from gensim.models.word2vec import Word2Vec
+
+# ============ CONFIG ============
+# Input TSV with at least: text_content, text_date (YYYY-MM or DD-MM-YYYY or ISO)
+TSV_PATH = "./subcorpus_tp1.csv"
+TSV_SEP = "\t"
+
+# Choose ONE of the bucket modes below
+BUCKET_MODE = "year"   # "year" or "custom"
+
+# If BUCKET_MODE == "year": all years present in the data will be used
+# If BUCKET_MODE == "custom": define explicit ranges here (inclusive)
+CUSTOM_TIME_FRAMES = [
+    # ("1992-09-01", "1992-09-30", "1992_09"),
+    # ("2010-09-01", "2010-09-30", "2010_09"),
+    # ("2020-01-01", "2020-01-31", "2020_01"),
+]
+
+# Minimal TWEC params
+SIZE = 300
+WINDOW = 6
+MIN_COUNT = 5  # used both for compass training and slice filtering
+WORKERS = max(1, multiprocessing.cpu_count() - 1)
+
+# Output layout
+DATA_DIR = "./data"
+MODEL_DIR = "./model"
+os.makedirs(DATA_DIR, exist_ok=True)
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# ============ 1) LOAD & BUCKET ============
+def load_and_bucket(tsv_path: str, sep: str = "\t", mode: str = "year"):
+    df = pd.read_csv(tsv_path, sep=sep, low_memory=False)
+    # normalize date
+    df["text_date"] = pd.to_datetime(df["text_date"], errors="coerce", dayfirst=True, utc=False)
+    df = df.dropna(subset=["text_date"])
+    df["text_content"] = df["text_content"].fillna("").astype(str)
+
+    buckets = {}
+
+    if mode == "custom":
+        if not CUSTOM_TIME_FRAMES:
+            raise ValueError("CUSTOM_TIME_FRAMES is empty but BUCKET_MODE=='custom'.")
+        for start, end, label in CUSTOM_TIME_FRAMES:
+            mask = (df["text_date"] >= pd.to_datetime(start)) & (df["text_date"] <= pd.to_datetime(end))
+            texts = df.loc[mask, "text_content"].tolist()
+            if texts:
+                buckets[label] = texts
+    else:
+        # yearly buckets
+        df["year"] = df["text_date"].dt.year
+        for y, sub in df.groupby("year"):
+            label = f"y{y}"
+            texts = sub["text_content"].tolist()
+            if texts:
+                buckets[label] = texts
+
+    return buckets
+
+def write_bucket_files(buckets: dict):
+    """Writes one plain text file per bucket with one sentence per line (already tokenized simply by whitespace)."""
+    paths = []
+    for label, texts in buckets.items():
+        out_path = os.path.join(DATA_DIR, f"sentences_{label}.txt")
+        with open(out_path, "w", encoding="utf-8") as f:
+            for t in texts:
+                # minimal: just write raw line (TWEC/Word2Vec will handle tokenization by whitespace)
+                f.write(t.replace("\n", " ").strip() + "\n")
+        paths.append(out_path)
+    return paths
+
+# ============ 2) TRAIN COMPASS ============
+def build_compass(all_sentence_paths):
+    compass_input = os.path.join(DATA_DIR, "all_sentences.txt")
+    with open(compass_input, "w", encoding="utf-8") as out:
+        for p in all_sentence_paths:
+            with open(p, "r", encoding="utf-8") as f:
+                for line in f:
+                    out.write(line)
+
+    aligner = TWEC(size=SIZE, min_count=MIN_COUNT, window=WINDOW, workers=WORKERS)
+    aligner.train_compass(compass_input, overwrite=True)
+    # Compass saved to ./model/compass.model by TWEC
+    return os.path.join(MODEL_DIR, "compass.model")
+
+# ============ 3) TRAIN SLICES (ALIGNED) ============
+def filter_min_count(input_path: str, min_count: int):
+    """Filter tokens by min_count for each slice (simple frequency-based)."""
+    # Count
+    from collections import Counter
+    c = Counter()
+    with open(input_path, "r", encoding="utf-8") as f:
+        for line in f:
+            c.update(line.strip().split())
+
+    # Filtered write
+    out_path = input_path.replace(".txt", f"_min_count.txt")
+    with open(input_path, "r", encoding="utf-8") as inp, open(out_path, "w", encoding="utf-8") as out:
+        for line in inp:
+            toks = [w for w in line.strip().split() if c[w] >= min_count]
+            if toks:
+                out.write(" ".join(toks) + "\n")
+    return out_path
+
+def train_slices(bucket_sentence_paths):
+    aligner = TWEC(size=SIZE, min_count=MIN_COUNT, window=WINDOW, workers=WORKERS)
+    slice_models = {}
+    for p in bucket_sentence_paths:
+        filtered = filter_min_count(p, MIN_COUNT)
+        aligner.train_slice(filtered, save=True)  # saves to ./model/sentences_<label>_min_count.model
+        label = os.path.basename(filtered).replace("sentences_", "").replace("_min_count.txt", "")
+        slice_models[label] = os.path.join(MODEL_DIR, f"sentences_{label}_min_count.model")
+    return slice_models
+
+# ============ 4) QUICK LOOKUP: NEIGHBORS OVER TIME ============
+def neighbors_over_time(slice_models: dict, query: str, topn: int = 10):
+    """Print nearest neighbors per slice (time bucket). This is the only 'output' to *see* temporal change."""
+    print(f"\n=== Nearest neighbors for '{query}' across time ===")
+    for label in sorted(slice_models.keys()):
+        path = slice_models[label]
+        try:
+            m = Word2Vec.load(path)
+            if query in m.wv:
+                sims = m.wv.most_similar([query], topn=topn)
+                sims_str = ", ".join([f"{w} ({s:.2f})" for w, s in sims])
+                print(f"{label}: {sims_str}")
+            else:
+                print(f"{label}: '{query}' not in vocabulary")
+        except Exception as e:
+            print(f"{label}: error loading model -> {e}")
+
+# ============ RUN ============
+if __name__ == "__main__":
+    # 1) Bucket
+    buckets = load_and_bucket(TSV_PATH, sep=TSV_SEP, mode=BUCKET_MODE)
+    paths = write_bucket_files(buckets)
+
+    # 2) Compass
+    compass_path = build_compass(paths)
+    print(f"Compass ready: {compass_path}")
+
+    # 3) Slices
+    slice_models = train_slices(paths)
+    print("Slices trained:", ", ".join(sorted(slice_models.keys())))
+
+    # 4) Show temporal change for an example word
+    # Change this to your target term (e.g., "Solidarität")
+    TARGET_WORD = "Solidarität"
+    neighbors_over_time(slice_models, TARGET_WORD, topn=8)
